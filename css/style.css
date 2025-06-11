@@ -1,0 +1,13 @@
+body {
+    background-color: rgba(84,84,84) !important;
+}
+
+.horizontal-scroll-wrapper {
+  overflow-x: auto;
+  padding-bottom: 1rem;
+}
+
+.horizontal-scroll-wrapper {
+  scrollbar-width: thin;
+  scrollbar-color: #888 rgb(0, 0, 0, 0);
+}
