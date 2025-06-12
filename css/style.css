@@ -12,6 +12,16 @@ body {
   font-family: "Yuji Boku", serif;
 }
 
+.post {
+  background-color: rgb(64, 64, 64) !important;
+}
+
+textarea {
+  background-color: rgb(84, 84, 84) !important;
+  border: 0px !important;
+
+}
+
 .horizontal-scroll-wrapper {
   overflow-x: auto;
   padding-bottom: 1rem;
