@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Yuji+Boku&display=swap');
 
 body {
-    background-color: rgba(84,84,84) !important;
+    background-color: rgb(84, 84, 84) !important;
 }
 
-.navbar {
-  background-color: rgba(64,64,64) !important;
+.navbar, .footer {
+  background-color: #252433 !important;
 }
 
 .title {
