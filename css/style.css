@@ -1,5 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Yuji+Boku&display=swap');
+
 body {
     background-color: rgba(84,84,84) !important;
+}
+
+.navbar {
+  background-color: rgba(64,64,64) !important;
+}
+
+.title {
+  font-family: "Yuji Boku", serif;
 }
 
 .horizontal-scroll-wrapper {
