@@ -22,6 +22,22 @@ textarea {
 
 }
 
+#follow {
+  margin-bottom: 7px !important;
+}
+
+.color1 {
+  color: #e4b15f !important;
+}
+
+.color2 {
+  color: #74b8e3 !important;
+}
+
+.color3 {
+  color: #c53e35 !important;
+}
+
 .horizontal-scroll-wrapper {
   overflow-x: auto;
   padding-bottom: 1rem;
