@@ -1,23 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Yuji+Boku&display=swap');
 
 body {
-    background-color: rgb(84, 84, 84) !important;
+    background-color: #424242 !important;
 }
 
 .navbar, .footer {
-  background-color: #252433 !important;
+  background-color: #2A2A2A !important;
 }
 
 .title {
   font-family: "Yuji Boku", serif;
 }
 
-.post {
-  background-color: rgb(64, 64, 64) !important;
+.kimera {
+  border-radius: 80px !important;
 }
 
 textarea {
-  background-color: rgb(84, 84, 84) !important;
+  background-color: #424242 !important;
   border: 0px !important;
 
 }
