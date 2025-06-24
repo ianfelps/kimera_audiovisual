@@ -15,7 +15,7 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="index.html">
                 <div class="row">
-                    <div class="col ms-3"><img src="img/logo.png" alt="Logo" width="100" height="100"></div>
+                    <div class="col ms-3"><img src="img/logo.png" alt="Logo" width="80" height="80"></div>
                     <div class="col ms-5 ps-5"><h1 class=" text-center title display-3"> KIMERA<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Audiovisual</h1></div>
                 </div>
             </a>
@@ -42,26 +42,40 @@
 
     <div class="container-fluid p-5">
         <div class="row">
-            <div class="col-9">
-                <img src="img/kimera.jpg" alt="Kimera" class="kimera border border-3 border-dark shadow-lg" style="width: 100%; position: relative;">
-                <div class="w-100">
-                    <a class="text-center title btn" style="position: absolute; left: 32%; top: 30%;" href="catalogo.html">
+            <div class="col-9 position-relative">
+                <img src="img/kimera.jpg" alt="Kimera" class="img-fluid kimera border border-3 border-dark shadow-lg" style="width: 100%; height: 100%;">
+                <a class="position-absolute top-0 start-50 translate-middle-x text-center title btn mt-3" href="catalogo.html">
                     <span class="display-2">Play</span>
-                    </a>
-                    <a class="text-center title btn" style="position: absolute; left: 5%; top: 74%;" href="perfil.html">
-                        <span class="display-2">Perfil</span>
-                    </a>
-                    <a class="text-center title btn" style="position: absolute; left: 60%; top: 74%;" href="rede.html">
-                        <span class="display-2">Rede</span>
-                    </a>
-                </div>
+                </a>
+
+                <!-- Botão Perfil (baixo e esquerda) -->
+                <a class="position-absolute bottom-0 start-0 text-center title btn mb-4 ms-5" href="perfil.html">
+                    <span class="display-2">Perfil</span>
+                </a>
+
+                <!-- Botão Rede (baixo e direita) -->
+                <a class="position-absolute bottom-0 end-0 text-center title btn mb-4 me-5" href="rede.html">
+                    <span class="display-2">Rede</span>
+                </a>
             </div>
             <div class="col-3">
-                <a href="video.html"><img src="img/mv.png" alt="Imagem 1" width="45%" height="270px" class="rounded shadow border border-3 border-dark me-3"></a>
-                <a href="catalogo.html"><img src="img/mv1.jpg" alt="Imagem 2" width="45%" height="270px" class="rounded shadow border border-3 border-dark ms-3"></a>
-                <a href="catalogo.html"><img src="img/mv2.jpg" alt="Imagem 3" width="45%" height="270px" class="rounded shadow border border-3 border-dark mt-4 me-3"></a>
-                <a href="catalogo.html"><img src="img/mv3.jpg" alt="Imagem 4" width="45%" height="270px" class="rounded shadow border border-3 border-dark mt-4 ms-3"></a>
-                <a href="catalogo.html" class="btn mt-4 w-100 shadow" style="background-color: rgb(22, 122, 22);" type="button"><i class="bi bi-play-fill h1"></i></a>
+                <div class="row">
+                    <div class="col">
+                        <a href="video.html"><img src="img/mv.jpg" alt="Imagem 1" height="270px" class="img-fluid rounded shadow border border-3 border-dark"></a>
+                    </div>
+                    <div class="col">
+                        <a href="catalogo.html"><img src="img/mv1.jpg" alt="Imagem 2" height="270px" class="img-fluid rounded shadow border border-3 border-dark"></a>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
+                        <a href="catalogo.html"><img src="img/mv2.jpg" alt="Imagem 3" height="270px" class="img-fluid rounded shadow border border-3 border-dark"></a>
+                    </div>
+                    <div class="col">
+                        <a href="catalogo.html"><img src="img/mv3.jpg" alt="Imagem 4" height="270px" class="img-fluid rounded shadow border border-3 border-dark"></a>
+                    </div>
+                </div>
+                <a href="catalogo.html" class="btn mt-3 w-100 shadow" style="background-color: rgb(22, 122, 22);" type="button"><i class="bi bi-play-fill h1"></i></a>
             </div>
         </div>
     </div>
