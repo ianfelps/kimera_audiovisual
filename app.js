@@ -1,5 +1,6 @@
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
+require('dotenv').config();
 
 // Importa as rotas
 const usuariosRouter = require('./routes/users');

@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+// Configura o JWT
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // POST /api/usuarios/ (Criar um novo usuário - Cadastro)
 router.post('/', async (req, res) => {
@@ -57,18 +61,36 @@ router.post('/login', async (req, res) => {
     }
 
     try {
-        const sql = 'SELECT id_usuario, email, senha_hash FROM Usuarios WHERE email = ?';
+        const sql = 'SELECT id_usuario, nome_usuario, email, senha_hash FROM Usuarios WHERE email = ?';
         const [[user]] = await db.query(sql, [email]);
 
         if (!user) {
-            return res.status(401).json({ error: 'Credenciais inválidas.' }); // Usuário não encontrado
+            return res.status(401).json({ error: 'Credenciais inválidas.' });
         }
 
         const senhaValida = await bcrypt.compare(senha, user.senha_hash);
 
         if (senhaValida) {
-            // IMPORTANTE: Em uma aplicação real, aqui você geraria e retornaria um token JWT.
-            res.status(200).json({ message: 'Login bem-sucedido!', userId: user.id_usuario, token: 'token_jwt_placeholder' });
+            const payload = {
+                userId: user.id_usuario,
+                username: user.nome_usuario,
+                email: user.email
+            };
+
+            // Gera o token JWT
+            const token = jwt.sign(
+                payload,      // Dados que serão armazenados no token
+                JWT_SECRET,   // Chave secreta para assinar o token
+                { expiresIn: '1h' } // Opções, como o tempo de expiração (1 hora)
+            );
+
+            // Envia a resposta com a mensagem de sucesso e o token
+            res.status(200).json({ 
+                message: 'Login bem-sucedido!', 
+                userId: user.id_usuario,
+                token: token // O token JWT gerado
+            });
+
         } else {
             res.status(401).json({ error: 'Credenciais inválidas.' }); // Senha incorreta
         }
