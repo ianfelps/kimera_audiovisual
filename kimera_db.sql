@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS Curtidas (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-/*
+
 -- Inserindo as 5 opções de fotos de perfil iniciais
 INSERT INTO Fotos_Perfil (`id_foto`, `url_foto`, `descricao`) VALUES
 (1, '/images/avatars/avatar_gato.png', 'Avatar de Gato'),
@@ -113,7 +113,7 @@ INSERT INTO Fotos_Perfil (`id_foto`, `url_foto`, `descricao`) VALUES
 (4, '/images/avatars/avatar_abstrato.png', 'Avatar Abstrato'),
 (5, '/images/avatars/avatar_planeta.png', 'Avatar de Planeta')
 ON DUPLICATE KEY UPDATE url_foto=VALUES(url_foto), descricao=VALUES(descricao);
-*/
+
 
 CREATE INDEX idx_data_publicacao ON Posts(`data_publicacao` DESC);
 CREATE INDEX idx_data_comentario ON Comentarios(`data_comentario` DESC);

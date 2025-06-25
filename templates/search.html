@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curta de Terror - KIMERA Audiovisual</title>
+    <title>Buscar - KIMERA Audiovisual</title>
     <link rel="icon" type="image/x-icon" href="img/logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
@@ -11,12 +11,12 @@
 </head>
 <body class="text-light" data-bs-theme="dark">
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg shadow py-4">
+    <nav class="navbar navbar-expand-lg shadow py-3">
         <div class="container-fluid">
             <a class="navbar-brand" href="index.html">
                 <div class="row">
                     <div class="col ms-3"><img src="img/logo.png" alt="Logo" width="80" height="80"></div>
-                    <div class="col ms-5 ps-5"><h1 class=" text-center title display-3"> KIMERA<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Audiovisual</h1></div>
+                    <div class="col ms-2"><h1 class=" text-center title display-4"> KIMERA Audiovisual</h1></div>
                 </div>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -27,45 +27,29 @@
                 <ul class="navbar-nav me-auto"></ul>
                 <ul class="navbar-nav me-3">
                     <li class="nav-item mx-2">
-                        <h2><a class="nav-link" href="catalogo.html">Catálogo</a></h2>
+                        <h2><a class="nav-link" href="network.html">Rede</a></h2>
                     </li>
                     <li class="nav-item mx-2">
-                        <h2><a class="nav-link" href="rede.html">Rede</a></h2>
+                        <h2><a class="nav-link active" href="search.html">Buscar</a></h2>
                     </li>
                     <li class="nav-item mx-2">
-                        <h2><a class="nav-link" href="perfil.html">Perfil</a></h2>
+                        <h2><a class="nav-link" href="profile.html">Perfil</a></h2>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-5">
-        <div class="row text-center">
-            <h1>Confiável</h1>
-            <h4><i>Lia Miranda</i></h4>
-        </div>
-    </div>
-
-    <div class="container-fluid text-center mt-3 bg-black">
-        <iframe width="80%" height="760" src="https://www.youtube.com/embed/WBWoLL_Ryqw?si=tviMrpE_Xu47woh1" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-    </div>
-
-    <div class="container"><hr>
-            <div class="row">
-                <h4>Roteiro e direção de:</h4>
-                <p>Lia Miranda</p>
-                <h4>Direção de fotografia:</h4>
-                <p>Lia Miranda</p>
-                <h4>Elenco:</h4>
-                <Felipe>Shirley - Isabela Rosa<br>Felipe - Diogo Cazuza</p>
-            </div>
-        </div>
+    <div class="container my-5">
+        <form class="input-group shadow">
+            <input class="form-control border border-light" autocomplete="off" autofocus name="username" type="text" required>
+            <button class="btn btn-outline-light p-3" type="submit"><i class="bi bi-search h3"></i></button>
+        </form>
     </div>
 
     <!-- Rodapé -->
     <footer>
-        <div class="container-fluid text-center footer py-4 shadow">
+        <div class="container-fluid text-center footer py-4 shadow fixed-bottom">
             <span class="lead">© 2025 - KIMERA Audiovisual</span>
         </div>
     </footer>
