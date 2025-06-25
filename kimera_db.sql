@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS Usuarios (
     `email` VARCHAR(255) NOT NULL,
     `senha_hash` VARCHAR(255) NOT NULL,
     `biografia` VARCHAR(160) NULL,
-    `id_foto_perfil` INT NULL,
+    `id_foto_perfil` INT NULL DEFAULT 1,
     `data_criacao` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `data_atualizacao` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id_usuario`),
@@ -107,11 +107,11 @@ CREATE TABLE IF NOT EXISTS Curtidas (
 
 -- Inserindo as 5 opções de fotos de perfil iniciais
 INSERT INTO Fotos_Perfil (`id_foto`, `url_foto`, `descricao`) VALUES
-(1, '/images/avatars/avatar_gato.png', 'Avatar de Gato'),
-(2, '/images/avatars/avatar_cachorro.png', 'Avatar de Cachorro'),
-(3, '/images/avatars/avatar_robo.png', 'Avatar de Robô'),
-(4, '/images/avatars/avatar_abstrato.png', 'Avatar Abstrato'),
-(5, '/images/avatars/avatar_planeta.png', 'Avatar de Planeta')
+(1, '/img/icons/ico01.png', 'Avatar 01'),
+(2, '/img/icons/ico02.png', 'Avatar 02'),
+(3, '/img/icons/ico03.png', 'Avatar 03'),
+(4, '/img/icons/ico04.png', 'Avatar 04'),
+(5, '/img/icons/ico05.png', 'Avatar 05')
 ON DUPLICATE KEY UPDATE url_foto=VALUES(url_foto), descricao=VALUES(descricao);
 
 
