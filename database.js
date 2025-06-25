@@ -1,15 +1,12 @@
-const mysql = require('mysql2');
-const db = mysql.createConnection({
+const mysql = require('mysql2/promise');
+const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: '0905',
-    database: 'kimera_db'
+    database: 'kimera_db',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
-// criar conexao com o banco de dados
-db.connect(err => {
-    if (err) throw err;
-    console.log('Conectado ao banco de dados!')
-});
-
-module.exports = db;
+module.exports = pool;
