@@ -1,87 +1,73 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../database');
+const authMiddleware = require('./auth'); // Assumindo que o middleware está na pasta 'routes'
 
-// --- SEGUIDORES ---
-router.post('/usuarios/:id/seguir', async (req, res) => {
+// --- SEGUIDORES (Lógica de Toggle) ---
+// Uma única rota para seguir ou deixar de seguir um usuário
+router.post('/usuarios/:id/seguir', authMiddleware, async (req, res) => {
     const id_seguindo = req.params.id;
-    const { id_seguidor } = req.body; 
+    const id_seguidor = req.user.userId; // ID do usuário logado vem do token
 
-    if (id_seguidor === id_seguindo) {
-        return res.status(400).json({ error: 'Um usuário não pode seguir a si mesmo.' });
+    if (parseInt(id_seguidor, 10) === parseInt(id_seguindo, 10)) {
+        return res.status(400).json({ error: 'Um usuário não pode interagir consigo mesmo.' });
     }
 
     try {
-        const sql = 'INSERT INTO Seguidores (id_seguidor, id_seguindo) VALUES (?, ?)';
-        await db.query(sql, [id_seguidor, id_seguindo]);
-        res.status(200).json({ message: 'Usuário seguido com sucesso!' });
-    } catch (error) {
-        if (error.code === 'ER_DUP_ENTRY') {
-            return res.status(409).json({ error: 'Você já segue este usuário.' });
-        }
-        res.status(500).json({ error: 'Erro ao seguir usuário.', details: error.message });
-    }
-});
+        // 1. Verifica se a relação já existe
+        const checkSql = 'SELECT * FROM Seguidores WHERE id_seguidor = ? AND id_seguindo = ?';
+        const [existing] = await db.query(checkSql, [id_seguidor, id_seguindo]);
 
-// DELETE 
-router.delete('/usuarios/:id/deixar-de-seguir', async (req, res) => {
-    const id_seguindo = req.params.id;
-    const { id_seguidor } = req.body;
-
-    try {
-        const sql = 'DELETE FROM Seguidores WHERE id_seguidor = ? AND id_seguindo = ?';
-        const [result] = await db.query(sql, [id_seguidor, id_seguindo]);
-
-        if (result.affectedRows > 0) {
-            res.status(200).json({ message: 'Deixou de seguir o usuário com sucesso!' });
+        if (existing.length > 0) {
+            // 2. Se já segue, deixa de seguir (DELETE)
+            const deleteSql = 'DELETE FROM Seguidores WHERE id_seguidor = ? AND id_seguindo = ?';
+            await db.query(deleteSql, [id_seguidor, id_seguindo]);
+            res.status(200).json({ message: 'Deixou de seguir o usuário.', seguiu: false });
         } else {
-            res.status(404).json({ message: 'Relação de seguir não encontrada.' });
+            // 3. Se não segue, passa a seguir (INSERT)
+            const insertSql = 'INSERT INTO Seguidores (id_seguidor, id_seguindo) VALUES (?, ?)';
+            await db.query(insertSql, [id_seguidor, id_seguindo]);
+            res.status(200).json({ message: 'Usuário seguido com sucesso!', seguiu: true });
         }
     } catch (error) {
-        res.status(500).json({ error: 'Erro ao deixar de seguir usuário.', details: error.message });
+        res.status(500).json({ error: 'Erro no servidor ao interagir com o usuário.', details: error.message });
     }
 });
 
-// --- CURTIDAS ---
-router.post('/posts/:id/curtir', async (req, res) => {
+
+// --- CURTIDAS (Lógica de Toggle) ---
+// Uma única rota para curtir ou descurtir um post
+router.post('/posts/:id/curtir', authMiddleware, async (req, res) => {
     const id_post = req.params.id;
-    const { id_usuario_curtiu } = req.body;
+    const id_usuario_curtiu = req.user.userId; // ID vem do token
 
     try {
-        const sql = 'INSERT INTO Curtidas (id_post, id_usuario_curtiu) VALUES (?, ?)';
-        await db.query(sql, [id_post, id_usuario_curtiu]);
-        res.status(200).json({ message: 'Post curtido com sucesso!' });
-    } catch (error) {
-        if (error.code === 'ER_DUP_ENTRY') {
-            return res.status(409).json({ error: 'Você já curtiu este post.' });
-        }
-        res.status(500).json({ error: 'Erro ao curtir o post.', details: error.message });
-    }
-});
+        // 1. Verifica se já curtiu
+        const checkSql = 'SELECT * FROM Curtidas WHERE id_post = ? AND id_usuario_curtiu = ?';
+        const [existing] = await db.query(checkSql, [id_post, id_usuario_curtiu]);
 
-router.delete('/posts/:id/descurtir', async (req, res) => {
-    const id_post = req.params.id;
-
-    const { id_usuario_curtiu } = req.body;
-
-    try {
-        const sql = 'DELETE FROM Curtidas WHERE id_post = ? AND id_usuario_curtiu = ?';
-        const [result] = await db.query(sql, [id_post, id_usuario_curtiu]);
-
-        if (result.affectedRows > 0) {
-            res.status(200).json({ message: 'Post descurtido com sucesso!' });
+        if (existing.length > 0) {
+            // 2. Se já curtiu, descurte (DELETE)
+            const deleteSql = 'DELETE FROM Curtidas WHERE id_post = ? AND id_usuario_curtiu = ?';
+            await db.query(deleteSql, [id_post, id_usuario_curtiu]);
+            res.status(200).json({ message: 'Post descurtido.', curtiu: false });
         } else {
-            res.status(404).json({ message: 'Curtida não encontrada.' });
+            // 3. Se não curtiu, curte (INSERT)
+            const insertSql = 'INSERT INTO Curtidas (id_post, id_usuario_curtiu) VALUES (?, ?)';
+            await db.query(insertSql, [id_post, id_usuario_curtiu]);
+            res.status(200).json({ message: 'Post curtido com sucesso!', curtiu: true });
         }
     } catch (error) {
-        res.status(500).json({ error: 'Erro ao descurtir o post.', details: error.message });
+        res.status(500).json({ error: 'Erro no servidor ao interagir com o post.', details: error.message });
     }
 });
+
 
 // --- COMENTÁRIOS ---
-router.post('/posts/:id/comentar', async (req, res) => {
+router.post('/posts/:id/comentar', authMiddleware, async (req, res) => {
     const id_post = req.params.id;
-    const { id_usuario_autor, texto_comentario } = req.body;
+    const id_usuario_autor = req.user.userId; // ID vem do token
+    const { texto_comentario } = req.body;
 
     if (!texto_comentario) {
         return res.status(400).json({ error: 'O texto do comentário não pode ser vazio.' });
@@ -96,6 +82,7 @@ router.post('/posts/:id/comentar', async (req, res) => {
     }
 });
 
+// GET para buscar todos os comentários de um post (rota pública)
 router.get('/posts/:id/comentarios', async (req, res) => {
     const id_post = req.params.id;
     try {
@@ -114,5 +101,33 @@ router.get('/posts/:id/comentarios', async (req, res) => {
     }
 });
 
+// NOVO: Rota para DELETAR um comentário
+router.delete('/comentarios/:id', authMiddleware, async (req, res) => {
+    const id_comentario = req.params.id;
+    const id_usuario_logado = req.user.userId; // ID do usuário logado
+
+    try {
+        // 1. Verifica quem é o autor do comentário
+        const checkSql = 'SELECT id_usuario_autor FROM Comentarios WHERE id_comentario = ?';
+        const [[comentario]] = await db.query(checkSql, [id_comentario]);
+
+        if (!comentario) {
+            return res.status(404).json({ error: 'Comentário não encontrado.' });
+        }
+
+        // 2. Compara o autor com o usuário logado
+        if (comentario.id_usuario_autor !== id_usuario_logado) {
+            return res.status(403).json({ error: 'Acesso negado. Você não pode deletar o comentário de outra pessoa.' });
+        }
+
+        // 3. Se for o autor, deleta o comentário
+        const deleteSql = 'DELETE FROM Comentarios WHERE id_comentario = ?';
+        await db.query(deleteSql, [id_comentario]);
+
+        res.status(200).json({ message: 'Comentário deletado com sucesso.' });
+    } catch (error) {
+        res.status(500).json({ error: 'Erro no servidor ao deletar o comentário.', details: error.message });
+    }
+});
 
 module.exports = router;
