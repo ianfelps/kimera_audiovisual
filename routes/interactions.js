@@ -3,11 +3,8 @@ const router = express.Router();
 const db = require('../database');
 
 // --- SEGUIDORES ---
-
-// POST /api/usuarios/:id/seguir
 router.post('/usuarios/:id/seguir', async (req, res) => {
     const id_seguindo = req.params.id;
-    // IMPORTANTE: O id do seguidor deve vir de um token de autenticação.
     const { id_seguidor } = req.body; 
 
     if (id_seguidor === id_seguindo) {
@@ -26,10 +23,9 @@ router.post('/usuarios/:id/seguir', async (req, res) => {
     }
 });
 
-// DELETE /api/usuarios/:id/deixar-de-seguir
+// DELETE 
 router.delete('/usuarios/:id/deixar-de-seguir', async (req, res) => {
     const id_seguindo = req.params.id;
-    // IMPORTANTE: O id do seguidor deve vir de um token.
     const { id_seguidor } = req.body;
 
     try {
@@ -47,11 +43,8 @@ router.delete('/usuarios/:id/deixar-de-seguir', async (req, res) => {
 });
 
 // --- CURTIDAS ---
-
-// POST /api/posts/:id/curtir
 router.post('/posts/:id/curtir', async (req, res) => {
     const id_post = req.params.id;
-    // IMPORTANTE: O id do usuário deve vir de um token.
     const { id_usuario_curtiu } = req.body;
 
     try {
@@ -66,10 +59,9 @@ router.post('/posts/:id/curtir', async (req, res) => {
     }
 });
 
-// DELETE /api/posts/:id/descurtir
 router.delete('/posts/:id/descurtir', async (req, res) => {
     const id_post = req.params.id;
-    // IMPORTANTE: O id do usuário deve vir de um token.
+
     const { id_usuario_curtiu } = req.body;
 
     try {
@@ -87,11 +79,8 @@ router.delete('/posts/:id/descurtir', async (req, res) => {
 });
 
 // --- COMENTÁRIOS ---
-
-// POST /api/posts/:id/comentar
 router.post('/posts/:id/comentar', async (req, res) => {
     const id_post = req.params.id;
-    // IMPORTANTE: O id do autor deve vir de um token.
     const { id_usuario_autor, texto_comentario } = req.body;
 
     if (!texto_comentario) {
@@ -107,7 +96,6 @@ router.post('/posts/:id/comentar', async (req, res) => {
     }
 });
 
-// GET /api/posts/:id/comentarios
 router.get('/posts/:id/comentarios', async (req, res) => {
     const id_post = req.params.id;
     try {

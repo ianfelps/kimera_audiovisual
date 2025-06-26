@@ -14,13 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
         registerForm.addEventListener('submit', async function(event) {
             event.preventDefault();
 
-            // Captura os dados do formulário
             const nome_completo = document.getElementById('nome').value;
             const nome_usuario = document.getElementById('username').value;
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
 
-            // Limpa mensagens anteriores
             messageDiv.textContent = '';
             messageDiv.className = 'message';
 

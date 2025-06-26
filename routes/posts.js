@@ -2,9 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database');
 
-// POST /api/posts/ (Criar um novo post)
 router.post('/', async (req, res) => {
-    // IMPORTANTE: Em uma aplicação real, o 'id_usuario_autor' viria de um token de autenticação, não do corpo da requisição.
     const { conteudo_texto, id_usuario_autor } = req.body;
 
     if (!conteudo_texto || !id_usuario_autor) {
@@ -21,7 +19,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-// GET /api/posts/ (Listar posts - Feed)
 router.get('/', async (req, res) => {
     try {
         const sql = `
@@ -39,7 +36,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// GET /api/posts/:id (Buscar um post específico)
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
     try {
@@ -61,10 +57,8 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// DELETE /api/posts/:id (Deletar um post)
 router.delete('/:id', async (req, res) => {
     const id_post = req.params.id;
-    // IMPORTANTE: O id do usuário deve vir de um token para garantir que ele é o dono do post.
     const { id_usuario_logado } = req.body; 
 
     if (!id_usuario_logado) {

@@ -182,23 +182,17 @@ const swaggerDocument = {
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Middleware para interpretar o corpo das requisições como JSON (substitui bodyParser.json)
 app.use(express.json());
 
-// Middleware para interpretar requisições com corpo urlencoded (substitui bodyParser.urlencoded)
 app.use(express.urlencoded({ extended: true }));
 
-// Configura o servidor para servir arquivos estáticos
 const path = require('path');
-// diretorio dos arquivos estaticos
 app.use(express.static(path.join(__dirname, 'templates')));
 
-// Rota para página principal
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'templates', 'index.html'))
 });
 
-// Rota de "saúde" da API para verificar se está online
 app.get('/api', (req, res) => {
     res.status(200).json({
         message: 'API da KIMERA está funcionando!',
@@ -206,19 +200,16 @@ app.get('/api', (req, res) => {
     });
 });
 
-// Registra as rotas importadas para API
 app.use('/api/usuarios', usuariosRouter);
 app.use('/api/posts', postsRouter);
 app.use('/api', interacoesRouter);
 
 
-// Middleware para tratar erros
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Algo deu errado no servidor!');
 });
 
-// Inicia o servidor
 app.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
     console.log(`Documentação da API disponível em http://localhost:${PORT}/api-docs`);

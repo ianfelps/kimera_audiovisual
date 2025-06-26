@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require('../database');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const auth = require('./auth');
 
 // Configura o JWT
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -30,29 +31,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-// GET /api/usuarios/:nome_usuario (Buscar um usuário pelo nome de usuário)
-router.get('/:nome_usuario', async (req, res) => {
-    const { nome_usuario } = req.params;
-    try {
-        const sql = `
-            SELECT u.id_usuario, u.nome_completo, u.nome_usuario, u.biografia, u.data_criacao, p.url_foto 
-            FROM Usuarios u 
-            LEFT JOIN Fotos_Perfil p ON u.id_foto_perfil = p.id_foto 
-            WHERE u.nome_usuario = ?`;
-        
-        const [[user]] = await db.query(sql, [nome_usuario]); // [[user]] pega o primeiro elemento do array de resultados
-        
-        if (user) {
-            res.status(200).json(user);
-        } else {
-            res.status(404).json({ message: 'Usuário não encontrado.' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: 'Erro ao buscar usuário', details: error.message });
-    }
-});
-
-// POST /api/usuarios/login (Autenticar um usuário)
 router.post('/login', async (req, res) => {
     const { email, senha } = req.body;
 
@@ -79,23 +57,130 @@ router.post('/login', async (req, res) => {
 
             // Gera o token JWT
             const token = jwt.sign(
-                payload,      // Dados que serão armazenados no token
-                JWT_SECRET,   // Chave secreta para assinar o token
-                { expiresIn: '1h' } // Opções, como o tempo de expiração (1 hora)
+                payload,    
+                JWT_SECRET,   
+                { expiresIn: '1h' } 
             );
 
-            // Envia a resposta com a mensagem de sucesso e o token
             res.status(200).json({ 
                 message: 'Login bem-sucedido!', 
                 userId: user.id_usuario,
-                token: token // O token JWT gerado
+                token: token 
             });
 
         } else {
-            res.status(401).json({ error: 'Credenciais inválidas.' }); // Senha incorreta
+            res.status(401).json({ error: 'Credenciais inválidas.' });
         }
     } catch (error) {
         res.status(500).json({ error: 'Erro no servidor durante o login.', details: error.message });
+    }
+});
+
+router.get('/me', auth, async (req, res) => {
+    try {
+        // O ID do usuário é fornecido de forma segura pelo middleware após a validação do token
+        const userId = req.user.userId;
+
+        // Query para buscar os dados do usuário e a URL da foto de perfil
+        const sql = `
+            SELECT u.id_usuario, u.nome_completo, u.nome_usuario, u.biografia, u.data_criacao, p.url_foto 
+            FROM Usuarios u 
+            LEFT JOIN Fotos_Perfil p ON u.id_foto_perfil = p.id_foto 
+            WHERE u.id_usuario = ?`;
+        
+        const [[user]] = await db.query(sql, [userId]);
+
+        if (!user) {
+            return res.status(404).json({ error: 'Usuário não encontrado.' });
+        }
+
+        // Você também pode buscar contagens de posts, seguidores, etc. e adicionar ao objeto
+        // Por exemplo:
+        // const [posts] = await db.query('SELECT COUNT(*) as postCount FROM Posts WHERE id_usuario = ?', [userId]);
+        // user.postCount = posts[0].postCount;
+
+        res.status(200).json(user);
+
+    } catch (error) {
+        res.status(500).json({ error: 'Erro no servidor ao buscar perfil.', details: error.message });
+    }
+});
+
+router.put('/editar', auth, async (req, res) => { // <-- 2. Usa o middleware aqui
+    
+    // 3. O ID do usuário vem do token, garantindo que ele só possa editar o próprio perfil.
+    const userId = req.user.userId; 
+
+    // 4. Pega os dados que o usuário quer atualizar do corpo da requisição.
+    const { nome_completo, nome_usuario, biografia, id_foto_perfil } = req.body;
+
+    // 5. Monta a query de forma dinâmica para atualizar apenas os campos fornecidos.
+    const fields = [];
+    const values = [];
+
+    if (nome_completo) {
+        fields.push('nome_completo = ?');
+        values.push(nome_completo);
+    }
+    if (nome_usuario) {
+        fields.push('nome_usuario = ?');
+        values.push(nome_usuario);
+    }
+    if (biografia) {
+        fields.push('biografia = ?');
+        values.push(biografia);
+    }
+    if (id_foto_perfil) {
+        fields.push('id_foto_perfil = ?');
+        values.push(id_foto_perfil);
+    }
+
+    // Se nenhum campo foi enviado, retorna um erro.
+    if (fields.length === 0) {
+        return res.status(400).json({ error: 'Nenhum campo fornecido para atualização.' });
+    }
+
+    // Adiciona o ID do usuário ao final do array de valores para a cláusula WHERE.
+    values.push(userId);
+
+    const sql = `UPDATE Usuarios SET ${fields.join(', ')} WHERE id_usuario = ?`;
+
+    try {
+        const [result] = await db.query(sql, values);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Usuário não encontrado.' });
+        }
+
+        res.status(200).json({ message: 'Perfil atualizado com sucesso!' });
+
+    } catch (error) {
+        // Trata erro de nome de usuário duplicado
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(409).json({ error: 'O nome de usuário já está em uso.' });
+        }
+        res.status(500).json({ error: 'Erro no servidor ao atualizar o perfil.', details: error.message });
+    }
+});
+
+router.get('/:nome_usuario', async (req, res) => {
+    const { nome_usuario } = req.params;
+    try {
+        const sql = `
+            SELECT u.id_usuario, u.nome_completo, u.nome_usuario, u.biografia, u.data_criacao, p.url_foto 
+            FROM Usuarios u 
+            LEFT JOIN Fotos_Perfil p ON u.id_foto_perfil = p.id_foto 
+            WHERE u.nome_usuario = ?`;
+        
+        const [[user]] = await db.query(sql, [nome_usuario]); 
+        
+        if (user) {
+            res.status(200).json(user);
+        } else {
+            res.status(404).json({ message: 'Usuário não encontrado.' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao buscar usuário', details: error.message });
     }
 });
 
