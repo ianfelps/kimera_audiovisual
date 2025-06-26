@@ -1,4 +1,3 @@
-// Aguarda o conteúdo da página (DOM) ser completamente carregado
 document.addEventListener('DOMContentLoaded', () => {
 
     if (localStorage.getItem('authToken')) {
@@ -6,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return; 
     }
 
-    // 2. LÓGICA DE CADASTRO
     const registerForm = document.getElementById('register-form');
     const messageDiv = document.getElementById('message');
 

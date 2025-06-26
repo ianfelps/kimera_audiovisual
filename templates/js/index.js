@@ -4,8 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const navPerfil = document.getElementById('nav-perfil');
     const navLogin = document.getElementById('nav-login');
     const navRegistro = document.getElementById('nav-registro');
-    const navLogout = document.getElementById('nav-logout');
-    const logoutButton = document.getElementById('logout-button');
 
     const token = localStorage.getItem('authToken');
 
@@ -14,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
         navRede.style.display = 'block';
         navBuscar.style.display = 'block';
         navPerfil.style.display = 'block';
-        navLogout.style.display = 'block';
 
         // Esconde os itens de login e registro
         navLogin.style.display = 'none';
@@ -30,17 +27,5 @@ document.addEventListener('DOMContentLoaded', () => {
         navRede.style.display = 'none';
         navBuscar.style.display = 'none';
         navPerfil.style.display = 'none';
-        navLogout.style.display = 'none';
-    }
-
-    if (logoutButton) {
-        logoutButton.addEventListener('click', (event) => {
-            event.preventDefault(); 
-
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('userId');
-
-            window.location.href = 'login.html';
-        });
     }
 });

@@ -1,39 +1,31 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // --- VERIFICAÇÃO DE LOGIN ---
     const token = localStorage.getItem('authToken');
     
     if (!token) {
-        window.location.href = 'login.html'; // Redireciona se não estiver logado
+        window.location.href = 'login.html'; 
         return;
     }
 
     const profileContainer = document.getElementById('profile-container');
     
-    // Mostra um feedback de carregamento
     profileContainer.innerHTML = '<div class="text-center p-5"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
 
     try {
-        // --- BUSCA DOS DADOS DO PERFIL ---
         const response = await fetch('/api/usuarios/me', {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}` // Envia o token para a rota protegida
+                'Authorization': `Bearer ${token}` 
             }
         });
 
         if (!response.ok) {
-            // Se o token for inválido ou expirado, a API retornará um erro.
-            localStorage.clear(); // Limpa o localStorage
-            window.location.href = 'login.html'; // E manda para o login
+            localStorage.clear(); 
+            window.location.href = 'login.html'; 
             return;
         }
 
         const user = await response.json();
         renderUserProfile(user);
-        
-        // Aqui você chamaria uma função para buscar e renderizar os posts do usuário
-        // fetchAndRenderPosts(user.id_usuario);
-
     } catch (error) {
         console.error('Erro ao buscar dados do perfil:', error);
         profileContainer.innerHTML = '<div class="alert alert-danger">Não foi possível carregar o perfil. Tente novamente mais tarde.</div>';
@@ -59,6 +51,9 @@ function renderUserProfile(user) {
                         <a href="edit-profile.html" class="btn btn-outline-light">
                             <i class="bi bi-pencil-square"></i> &nbsp;Editar Perfil
                         </a>
+                        <button id="profile-logout-button" class="btn btn-outline-danger ms-3">
+                            <i class="bi bi-x-lg"></i> &nbsp;Sair
+                        </button>
                     </div>
                 </div>
                 <div class="d-flex flex-row mt-2">
@@ -78,6 +73,16 @@ function renderUserProfile(user) {
     `;
     
     profileContainer.innerHTML = profileHTML;
+
+    const logoutButton = document.getElementById('profile-logout-button');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', () => {
+            // Limpa o token e qualquer outra informação do usuário do localStorage
+            localStorage.clear();
+            // Redireciona para a página de login
+            window.location.href = 'index.html';
+        });
+    }
 }
 
 // Futuramente, você pode criar esta função para buscar os posts
