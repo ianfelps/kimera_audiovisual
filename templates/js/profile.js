@@ -39,7 +39,7 @@ function renderUserProfile(user) {
     const profileHTML = `
         <div class="row g-0">
             <div class="col-12 col-lg-2 d-flex justify-content-center align-items-center p-3">
-                <img src="${profileImageUrl}" alt="Foto de perfil de ${user.nome_usuario}" width="150" height="150" class="rounded-circle border shadow" style="object-fit: cover;">
+                <img src="${profileImageUrl}" alt="Foto de perfil de ${user.nome_usuario}" width="150" height="150" class="rounded-circle shadow" style="object-fit: cover;">
             </div>
             <div class="col-12 col-lg-10 px-4 py-4">
                 <div class="d-flex justify-content-between align-items-start">

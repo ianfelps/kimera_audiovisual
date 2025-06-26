@@ -104,7 +104,8 @@ INSERT INTO Fotos_Perfil (`id_foto`, `url_foto`, `descricao`) VALUES
 (3, '/img/icons/ico03.png', 'Avatar 03'),
 (4, '/img/icons/ico04.png', 'Avatar 04'),
 (5, '/img/icons/ico05.png', 'Avatar 05'),
-(6, '/img/icons/ico06.png', 'Avatar 06')
+(6, '/img/icons/ico06.png', 'Avatar 06'),
+(7, '/img/icons/ico07.png', 'Avatar 07')
 ON DUPLICATE KEY UPDATE url_foto=VALUES(url_foto), descricao=VALUES(descricao);
 
 
