@@ -3,11 +3,12 @@ const router = express.Router();
 const db = require('../database');
 const auth = require('./auth');
 
-router.post('/', async (req, res) => {
-    const { conteudo_texto, id_usuario_autor } = req.body;
+router.post('/', auth, async (req, res) => {
+    const { conteudo_texto } = req.body;
+    const id_usuario_autor = req.user.userId; // ID vem do token
 
-    if (!conteudo_texto || !id_usuario_autor) {
-        return res.status(400).json({ error: 'conteudo_texto e id_usuario_autor são obrigatórios.' });
+    if (!conteudo_texto) {
+        return res.status(400).json({ error: 'conteudo_texto é obrigatório.' });
     }
     
     try {
@@ -20,7 +21,9 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
+    const loggedUserId = req.user.userId;
+    
     try {
         // --- QUERY ATUALIZADA ---
         const sql = `
@@ -32,15 +35,17 @@ router.get('/', async (req, res) => {
                 u.nome_usuario, 
                 u.nome_completo, 
                 fp.url_foto,
-                (SELECT COUNT(*) FROM Curtidas WHERE id_post = p.id_post) AS total_curtidas,
-                (SELECT COUNT(*) FROM Comentarios WHERE id_post = p.id_post) AS total_comentarios
+                (SELECT COUNT(*) FROM Curtidas WHERE id_post = p.id_post) AS likes_count,
+                (SELECT COUNT(*) FROM Comentarios WHERE id_post = p.id_post) AS comments_count,
+                (SELECT COUNT(*) > 0 FROM Curtidas WHERE id_post = p.id_post AND id_usuario_curtiu = ?) AS has_liked,
+                (SELECT COUNT(*) > 0 FROM Seguidores WHERE id_seguindo = u.id_usuario AND id_seguidor = ?) AS is_following
             FROM Posts p
             JOIN Usuarios u ON p.id_usuario_autor = u.id_usuario
             LEFT JOIN Fotos_Perfil fp ON u.id_foto_perfil = fp.id_foto
             ORDER BY p.data_publicacao DESC
             LIMIT 20`;
             
-        const [posts] = await db.query(sql);
+        const [posts] = await db.query(sql, [loggedUserId, loggedUserId]);
         res.status(200).json(posts);
     } catch (error) {
         res.status(500).json({ error: 'Erro ao buscar posts', details: error.message });

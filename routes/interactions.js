@@ -50,12 +50,22 @@ router.post('/posts/:id/curtir', auth, async (req, res) => {
             // 2. Se já curtiu, descurte (DELETE)
             const deleteSql = 'DELETE FROM Curtidas WHERE id_post = ? AND id_usuario_curtiu = ?';
             await db.query(deleteSql, [id_post, id_usuario_curtiu]);
-            res.status(200).json({ message: 'Post descurtido.', curtiu: false });
+            
+            // Retorna contagem atualizada
+            const countSql = 'SELECT COUNT(*) as count FROM Curtidas WHERE id_post = ?';
+            const [[{count}]] = await db.query(countSql, [id_post]);
+            
+            res.status(200).json({ message: 'Post descurtido.', curtiu: false, likes_count: count });
         } else {
             // 3. Se não curtiu, curte (INSERT)
             const insertSql = 'INSERT INTO Curtidas (id_post, id_usuario_curtiu) VALUES (?, ?)';
             await db.query(insertSql, [id_post, id_usuario_curtiu]);
-            res.status(200).json({ message: 'Post curtido com sucesso!', curtiu: true });
+            
+            // Retorna contagem atualizada
+            const countSql = 'SELECT COUNT(*) as count FROM Curtidas WHERE id_post = ?';
+            const [[{count}]] = await db.query(countSql, [id_post]);
+            
+            res.status(200).json({ message: 'Post curtido com sucesso!', curtiu: true, likes_count: count });
         }
     } catch (error) {
         res.status(500).json({ error: 'Erro no servidor ao interagir com o post.', details: error.message });
@@ -76,7 +86,12 @@ router.post('/posts/:id/comentar', auth, async (req, res) => {
     try {
         const sql = 'INSERT INTO Comentarios (id_post, id_usuario_autor, texto_comentario) VALUES (?, ?, ?)';
         const [result] = await db.query(sql, [id_post, id_usuario_autor, texto_comentario]);
-        res.status(201).json({ message: 'Comentário adicionado!', comentarioId: result.insertId });
+        
+        // Retorna contagem atualizada de comentários
+        const countSql = 'SELECT COUNT(*) as count FROM Comentarios WHERE id_post = ?';
+        const [[{count}]] = await db.query(countSql, [id_post]);
+        
+        res.status(201).json({ message: 'Comentário adicionado!', comentarioId: result.insertId, comments_count: count });
     } catch (error) {
         res.status(500).json({ error: 'Erro ao adicionar comentário.', details: error.message });
     }

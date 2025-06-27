@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLogin = document.getElementById('nav-login');
     const navRegistro = document.getElementById('nav-registro');
 
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('token');
 
     if (token) {
         // --- USUÁRIO ESTÁ LOGADO ---

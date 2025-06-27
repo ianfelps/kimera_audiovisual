@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    if (localStorage.getItem('authToken')) {
+    if (localStorage.getItem('token')) {
         window.location.href = '/index.html'; 
         return; 
     }
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
-                const response = await fetch('/api/usuarios/', {
+                const response = await fetch('/api/users/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
