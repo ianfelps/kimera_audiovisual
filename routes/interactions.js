@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../database');
-const authMiddleware = require('./auth'); // Assumindo que o middleware está na pasta 'routes'
+const auth = require('./auth'); // Assumindo que o middleware está na pasta 'routes'
 
 // --- SEGUIDORES (Lógica de Toggle) ---
 // Uma única rota para seguir ou deixar de seguir um usuário
-router.post('/usuarios/:id/seguir', authMiddleware, async (req, res) => {
+router.post('/usuarios/:id/seguir', auth, async (req, res) => {
     const id_seguindo = req.params.id;
     const id_seguidor = req.user.userId; // ID do usuário logado vem do token
 
@@ -37,7 +37,7 @@ router.post('/usuarios/:id/seguir', authMiddleware, async (req, res) => {
 
 // --- CURTIDAS (Lógica de Toggle) ---
 // Uma única rota para curtir ou descurtir um post
-router.post('/posts/:id/curtir', authMiddleware, async (req, res) => {
+router.post('/posts/:id/curtir', auth, async (req, res) => {
     const id_post = req.params.id;
     const id_usuario_curtiu = req.user.userId; // ID vem do token
 
@@ -64,7 +64,7 @@ router.post('/posts/:id/curtir', authMiddleware, async (req, res) => {
 
 
 // --- COMENTÁRIOS ---
-router.post('/posts/:id/comentar', authMiddleware, async (req, res) => {
+router.post('/posts/:id/comentar', auth, async (req, res) => {
     const id_post = req.params.id;
     const id_usuario_autor = req.user.userId; // ID vem do token
     const { texto_comentario } = req.body;
@@ -102,7 +102,7 @@ router.get('/posts/:id/comentarios', async (req, res) => {
 });
 
 // NOVO: Rota para DELETAR um comentário
-router.delete('/comentarios/:id', authMiddleware, async (req, res) => {
+router.delete('/comentarios/:id', auth, async (req, res) => {
     const id_comentario = req.params.id;
     const id_usuario_logado = req.user.userId; // ID do usuário logado
 

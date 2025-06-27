@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../database');
+const auth = require('./auth');
 
 router.post('/', async (req, res) => {
     const { conteudo_texto, id_usuario_autor } = req.body;
@@ -21,8 +22,18 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
     try {
+        // --- QUERY ATUALIZADA ---
         const sql = `
-            SELECT p.id_post, p.conteudo_texto, p.data_publicacao, u.nome_usuario, u.nome_completo, fp.url_foto
+            SELECT 
+                p.id_post, 
+                p.conteudo_texto, 
+                p.data_publicacao, 
+                u.id_usuario as id_usuario_autor,
+                u.nome_usuario, 
+                u.nome_completo, 
+                fp.url_foto,
+                (SELECT COUNT(*) FROM Curtidas WHERE id_post = p.id_post) AS total_curtidas,
+                (SELECT COUNT(*) FROM Comentarios WHERE id_post = p.id_post) AS total_comentarios
             FROM Posts p
             JOIN Usuarios u ON p.id_usuario_autor = u.id_usuario
             LEFT JOIN Fotos_Perfil fp ON u.id_foto_perfil = fp.id_foto
@@ -57,25 +68,26 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
     const id_post = req.params.id;
-    const { id_usuario_logado } = req.body; 
-
-    if (!id_usuario_logado) {
-        return res.status(401).json({ error: 'Autenticação necessária.' });
-    }
+    // 2. O ID do usuário logado vem do TOKEN, não do BODY. É seguro!
+    const id_usuario_logado = req.user.userId; 
 
     try {
+        // 3. A query continua a mesma, mas agora usa o ID seguro
         const sql = 'DELETE FROM Posts WHERE id_post = ? AND id_usuario_autor = ?';
         const [result] = await db.query(sql, [id_post, id_usuario_logado]);
 
         if (result.affectedRows > 0) {
             res.status(200).json({ message: 'Post deletado com sucesso!' });
         } else {
-            res.status(403).json({ error: 'Você não tem permissão para deletar este post ou o post não existe.' });
+            // Se affectedRows for 0, significa que ou o post não existe, ou não pertence a este usuário.
+            // Para um invasor, a resposta é a mesma, o que é bom para a segurança.
+            res.status(404).json({ error: 'Post não encontrado ou você não tem permissão para deletá-lo.' });
         }
     } catch (error) {
-        res.status(500).json({ error: 'Erro ao deletar post', details: error.message });
+        console.error("ERRO AO DELETAR POST:", error);
+        res.status(500).json({ error: 'Erro no servidor ao deletar o post.', details: error.message });
     }
 });
 

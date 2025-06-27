@@ -78,12 +78,13 @@ router.post('/login', async (req, res) => {
 
 router.get('/me', auth, async (req, res) => {
     try {
-        // O ID do usuário é fornecido de forma segura pelo middleware após a validação do token
         const userId = req.user.userId;
-
-        // Query para buscar os dados do usuário e a URL da foto de perfil
+        // --- QUERY ATUALIZADA ---
         const sql = `
-            SELECT u.id_usuario, u.nome_completo, u.nome_usuario, u.biografia, u.data_criacao, p.url_foto 
+            SELECT 
+                u.id_usuario, u.nome_completo, u.nome_usuario, u.biografia, u.data_criacao, p.url_foto,
+                (SELECT COUNT(*) FROM Seguidores WHERE id_seguindo = u.id_usuario) AS total_seguidores,
+                (SELECT COUNT(*) FROM Seguidores WHERE id_seguidor = u.id_usuario) AS total_seguindo
             FROM Usuarios u 
             LEFT JOIN Fotos_Perfil p ON u.id_foto_perfil = p.id_foto 
             WHERE u.id_usuario = ?`;
@@ -93,14 +94,7 @@ router.get('/me', auth, async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: 'Usuário não encontrado.' });
         }
-
-        // Você também pode buscar contagens de posts, seguidores, etc. e adicionar ao objeto
-        // Por exemplo:
-        // const [posts] = await db.query('SELECT COUNT(*) as postCount FROM Posts WHERE id_usuario = ?', [userId]);
-        // user.postCount = posts[0].postCount;
-
         res.status(200).json(user);
-
     } catch (error) {
         res.status(500).json({ error: 'Erro no servidor ao buscar perfil.', details: error.message });
     }
@@ -166,12 +160,16 @@ router.put('/editar', auth, async (req, res) => { // <-- 2. Usa o middleware aqu
 router.get('/:nome_usuario', async (req, res) => {
     const { nome_usuario } = req.params;
     try {
+        // --- QUERY ATUALIZADA ---
         const sql = `
-            SELECT u.id_usuario, u.nome_completo, u.nome_usuario, u.biografia, u.data_criacao, p.url_foto 
+            SELECT 
+                u.id_usuario, u.nome_completo, u.nome_usuario, u.biografia, u.data_criacao, p.url_foto,
+                (SELECT COUNT(*) FROM Seguidores WHERE id_seguindo = u.id_usuario) AS total_seguidores,
+                (SELECT COUNT(*) FROM Seguidores WHERE id_seguidor = u.id_usuario) AS total_seguindo
             FROM Usuarios u 
             LEFT JOIN Fotos_Perfil p ON u.id_foto_perfil = p.id_foto 
             WHERE u.nome_usuario = ?`;
-        
+            
         const [[user]] = await db.query(sql, [nome_usuario]); 
         
         if (user) {
