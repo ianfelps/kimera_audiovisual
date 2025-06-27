@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- AUTENTICAÇÃO E INICIALIZAÇÃO ---
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('token');
     const loggedInUserId = parseInt(localStorage.getItem('userId'), 10);
 
     if (!token) {
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // A requisição para a sua API, que já funciona
-            const response = await fetch(`/api/usuarios/${usernameToSearch}`, {
+            const response = await fetch(`/api/users/${usernameToSearch}`, {
                 headers: {
                     // Importante: a rota precisa saber quem está logado para verificar o status de 'seguir'
                     'Authorization': `Bearer ${token}`
@@ -77,8 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <p class="card-text mt-3">${user.biografia || '<i>Este usuário ainda não adicionou uma biografia.</i>'}</p>
                                 <hr>
                                 <div class="d-flex justify-content-start">
-                                    <div class="me-4"><strong>${user.total_seguidores}</strong> Seguidores</div>
-                                    <div><strong>${user.total_seguindo}</strong> Seguindo</div>
+                                    <div class="me-4"><strong>${user.followers_count || 0}</strong> Seguidores</div>
+                                    <div><strong>${user.following_count || 0}</strong> Seguindo</div>
                                 </div>
                             </div>
                         </div>
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const userIdToFollow = target.dataset.userId;
 
         try {
-            const response = await fetch(`/api/usuarios/${userIdToFollow}/seguir`, {
+            const response = await fetch(`/api/interactions/users/${userIdToFollow}/seguir`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -112,14 +112,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 target.textContent = 'Seguindo';
                 target.classList.remove('btn-outline-primary');
                 target.classList.add('btn-primary');
+                
+                // Atualiza contador de seguidores (+1)
+                updateFollowersCount(1);
             } else {
-                target.innerHTML = '<i class="bi bi-person-plus"></i> Seguir'; // Se precisar do ícone de volta
+                target.textContent = 'Seguir';
                 target.classList.remove('btn-primary');
                 target.classList.add('btn-outline-primary');
+                
+                // Atualiza contador de seguidores (-1)
+                updateFollowersCount(-1);
             }
         } catch (error) {
             console.error('Erro ao seguir/deixar de seguir:', error);
             alert(error.message);
+        }
+    }
+
+    function updateFollowersCount(change) {
+        const followersElement = document.querySelector('.d-flex.justify-content-start .me-4 strong');
+        if (followersElement) {
+            const currentCount = parseInt(followersElement.textContent) || 0;
+            const newCount = Math.max(0, currentCount + change);
+            followersElement.textContent = newCount;
         }
     }
 

@@ -100,7 +100,7 @@ const swaggerDocument = {
         },
     },
     paths: {
-        '/api/usuarios': {
+        '/api/users': {
             post: {
                 tags: ['Usuários'],
                 summary: 'Cria um novo usuário (Registro)',
@@ -111,7 +111,7 @@ const swaggerDocument = {
                 responses: { '201': { description: 'Usuário criado' } },
             },
         },
-        '/api/usuarios/login': {
+        '/api/users/login': {
             post: {
                 tags: ['Usuários'],
                 summary: 'Autentica um usuário e retorna um token JWT',
@@ -154,7 +154,7 @@ const swaggerDocument = {
                 }
             }
         },
-        '/api/usuarios/{nome_usuario}': {
+        '/api/users/{nome_usuario}': {
             get: {
                 tags: ['Usuários'],
                 summary: 'Retorna um perfil de usuário público pelo nome de usuário',
@@ -200,7 +200,7 @@ const swaggerDocument = {
                 responses: { '200': { description: 'Deletado' } },
             },
         },
-        '/api/usuarios/{id}/seguir': {
+        '/api/interactions/users/{id}/seguir': {
             post: {
                 tags: ['Interações'],
                 summary: 'Seguir ou deixar de seguir um usuário (toggle)',
@@ -211,7 +211,7 @@ const swaggerDocument = {
                 },
             },
         },
-        '/api/posts/{id}/curtir': {
+        '/api/interactions/posts/{id}/curtir': {
             post: {
                 tags: ['Interações'],
                 summary: 'Curtir ou descurtir um post (toggle)',
@@ -220,7 +220,7 @@ const swaggerDocument = {
                 responses: { '200': { description: 'Ação de curtir/descurtir executada com sucesso' } },
             },
         },
-        '/api/posts/{id}/comentar': {
+        '/api/interactions/posts/{id}/comentar': {
             post: {
                 tags: ['Interações'],
                 summary: 'Adicionar um comentário a um post',
@@ -233,7 +233,7 @@ const swaggerDocument = {
                 responses: { '201': { description: 'Comentário adicionado' } },
             },
         },
-        '/api/posts/{id}/comentarios': {
+        '/api/interactions/posts/{id}/comentarios': {
             get: {
                 tags: ['Interações'],
                 summary: 'Busca todos os comentários de um post específico',
@@ -253,7 +253,7 @@ const swaggerDocument = {
                 },
             },
         },
-        '/api/comentarios/{id}': {
+        '/api/interactions/comentarios/{id}': {
             delete: {
                 tags: ['Interações'],
                 summary: 'Deleta um comentário que pertence ao usuário logado',
@@ -289,9 +289,9 @@ app.get('/api', (req, res) => {
     });
 });
 
-app.use('/api/usuarios', usuariosRouter);
+app.use('/api/users', usuariosRouter);
 app.use('/api/posts', postsRouter);
-app.use('/api', interacoesRouter);
+app.use('/api/interactions', interacoesRouter);
 
 
 app.use((err, req, res, next) => {

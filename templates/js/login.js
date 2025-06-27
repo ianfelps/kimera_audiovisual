@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    if (localStorage.getItem('authToken')) {
+    if (localStorage.getItem('token')) {
         window.location.href = '/index.html';
         return;
     }
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
-                const response = await fetch('/api/usuarios/login', {
+                const response = await fetch('/api/users/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.ok) {
                     console.log('Login bem-sucedido:', data);
 
-                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('token', data.token);
                     localStorage.setItem('userId', data.userId);
 
                     messageDiv.className = 'alert alert-success';

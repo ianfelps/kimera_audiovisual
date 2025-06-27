@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
     // --- VERIFICAÇÃO DE LOGIN ---
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('token');
     if (!token) {
         window.location.href = 'login.html';
         return;
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         messageDiv.innerHTML = '<div class="text-center"><div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div> Carregando seus dados...</div>';
 
-        const response = await fetch('/api/usuarios/me', {
+        const response = await fetch('/api/users/me', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
 
         try {
-            const response = await fetch('/api/usuarios/editar', {
+            const response = await fetch('/api/users/editar', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

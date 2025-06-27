@@ -83,8 +83,9 @@ router.get('/me', auth, async (req, res) => {
         const sql = `
             SELECT 
                 u.id_usuario, u.nome_completo, u.nome_usuario, u.biografia, u.data_criacao, p.url_foto,
-                (SELECT COUNT(*) FROM Seguidores WHERE id_seguindo = u.id_usuario) AS total_seguidores,
-                (SELECT COUNT(*) FROM Seguidores WHERE id_seguidor = u.id_usuario) AS total_seguindo
+                (SELECT COUNT(*) FROM Posts WHERE id_usuario_autor = u.id_usuario) AS posts_count,
+                (SELECT COUNT(*) FROM Seguidores WHERE id_seguindo = u.id_usuario) AS followers_count,
+                (SELECT COUNT(*) FROM Seguidores WHERE id_seguidor = u.id_usuario) AS following_count
             FROM Usuarios u 
             LEFT JOIN Fotos_Perfil p ON u.id_foto_perfil = p.id_foto 
             WHERE u.id_usuario = ?`;
@@ -157,20 +158,24 @@ router.put('/editar', auth, async (req, res) => { // <-- 2. Usa o middleware aqu
     }
 });
 
-router.get('/:nome_usuario', async (req, res) => {
+router.get('/:nome_usuario', auth, async (req, res) => {
     const { nome_usuario } = req.params;
+    const loggedUserId = req.user.userId;
+    
     try {
         // --- QUERY ATUALIZADA ---
         const sql = `
             SELECT 
                 u.id_usuario, u.nome_completo, u.nome_usuario, u.biografia, u.data_criacao, p.url_foto,
-                (SELECT COUNT(*) FROM Seguidores WHERE id_seguindo = u.id_usuario) AS total_seguidores,
-                (SELECT COUNT(*) FROM Seguidores WHERE id_seguidor = u.id_usuario) AS total_seguindo
+                (SELECT COUNT(*) FROM Posts WHERE id_usuario_autor = u.id_usuario) AS posts_count,
+                (SELECT COUNT(*) FROM Seguidores WHERE id_seguindo = u.id_usuario) AS followers_count,
+                (SELECT COUNT(*) FROM Seguidores WHERE id_seguidor = u.id_usuario) AS following_count,
+                (SELECT COUNT(*) > 0 FROM Seguidores WHERE id_seguindo = u.id_usuario AND id_seguidor = ?) AS ja_seguindo
             FROM Usuarios u 
             LEFT JOIN Fotos_Perfil p ON u.id_foto_perfil = p.id_foto 
             WHERE u.nome_usuario = ?`;
             
-        const [[user]] = await db.query(sql, [nome_usuario]); 
+        const [[user]] = await db.query(sql, [loggedUserId, nome_usuario]); 
         
         if (user) {
             res.status(200).json(user);

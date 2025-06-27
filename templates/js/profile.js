@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('token');
     
     if (!token) {
         window.location.href = 'login.html'; 
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     profileContainer.innerHTML = '<div class="text-center p-5"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
 
     try {
-        const response = await fetch('/api/usuarios/me', {
+        const response = await fetch('/api/users/me', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}` 
@@ -58,13 +58,13 @@ function renderUserProfile(user) {
                 </div>
                 <div class="d-flex flex-row mt-2">
                     <div class="pe-3">
-                        <a href="#" class="text-decoration-none text-light"><strong>???</strong> publicações</a>
+                        <a href="#" class="text-decoration-none text-light"><strong>${user.posts_count || 0}</strong> publicações</a>
                     </div>
                     <div class="px-3 border-start border-end">
-                        <a href="#" class="text-decoration-none text-light"><strong>???</strong> seguidores</a>
+                        <a href="#" class="text-decoration-none text-light"><strong>${user.followers_count || 0}</strong> seguidores</a>
                     </div>
                     <div class="ps-3">
-                        <a href="#" class="text-decoration-none text-light"><strong>???</strong> seguidos</a>
+                        <a href="#" class="text-decoration-none text-light"><strong>${user.following_count || 0}</strong> seguidos</a>
                     </div>
                 </div>
                 <p class="lead mt-3">${user.biografia || '<i>Clique em "Editar Perfil" para adicionar uma biografia.</i>'}</p>
