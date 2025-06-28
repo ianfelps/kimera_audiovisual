@@ -5,7 +5,7 @@ const auth = require('./auth'); // Assumindo que o middleware está na pasta 'ro
 
 // --- SEGUIDORES (Lógica de Toggle) ---
 // Uma única rota para seguir ou deixar de seguir um usuário
-router.post('/usuarios/:id/seguir', auth, async (req, res) => {
+router.post('/users/:id/seguir', auth, async (req, res) => {
     const id_seguindo = req.params.id;
     const id_seguidor = req.user.userId; // ID do usuário logado vem do token
 
