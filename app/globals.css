@@ -1,0 +1,155 @@
+:root {
+  --kimera-bg: #424242;
+  --kimera-surface: #2a2a2a;
+  --kimera-gold: #e4b15f;
+  --kimera-blue: #74b8e3;
+  --kimera-red: #c53e35;
+  --kimera-green: #167a16;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--kimera-bg) !important;
+}
+
+.navbar,
+.footer {
+  background-color: var(--kimera-surface) !important;
+}
+
+.title {
+  font-family: "Yuji Boku", serif;
+}
+
+.brand-title {
+  line-height: 0.9;
+  white-space: nowrap;
+}
+
+.brand-subtitle {
+  display: block;
+  padding-left: 4.8rem;
+}
+
+.kimera {
+  border-radius: 80px !important;
+}
+
+.post-card,
+.profile-card,
+.tabs-shell {
+  background-color: rgb(42 42 42 / 28%);
+}
+
+textarea {
+  background-color: var(--kimera-bg) !important;
+  border: 0 !important;
+}
+
+.follow-button {
+  margin-bottom: 7px !important;
+}
+
+.color1 {
+  color: var(--kimera-gold) !important;
+}
+
+.color2 {
+  color: var(--kimera-blue) !important;
+}
+
+.color3 {
+  color: var(--kimera-red) !important;
+}
+
+.horizontal-scroll-wrapper {
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: #888 rgb(0 0 0 / 0);
+}
+
+.poster-card {
+  width: 250px;
+}
+
+.poster-image {
+  aspect-ratio: 25 / 37;
+  object-fit: cover;
+}
+
+.home-hero {
+  min-height: 620px;
+}
+
+.home-poster {
+  height: 270px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.play-button {
+  background-color: var(--kimera-green) !important;
+}
+
+.video-frame {
+  aspect-ratio: 16 / 9;
+  width: 80%;
+  min-height: 420px;
+  max-height: 760px;
+}
+
+.post-image {
+  max-width: 300px;
+  width: 100%;
+  height: auto;
+}
+
+.w-85 {
+  width: 85%;
+}
+
+@media (max-width: 991.98px) {
+  .brand-title {
+    font-size: 2.2rem !important;
+  }
+
+  .brand-subtitle {
+    padding-left: 2.6rem;
+  }
+
+  .home-hero {
+    min-height: 460px;
+  }
+
+  .kimera {
+    border-radius: 40px !important;
+  }
+
+  .video-frame {
+    width: 100%;
+    min-height: 260px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .brand-logo {
+    width: 56px;
+    height: 56px;
+  }
+
+  .brand-title {
+    font-size: 1.7rem !important;
+  }
+
+  .brand-subtitle {
+    padding-left: 1.8rem;
+  }
+
+  .home-action {
+    font-size: 2.2rem !important;
+  }
+}
